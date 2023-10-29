@@ -8,7 +8,16 @@ import userResolvers from './graphql/resolvers/userResolvers';
 
 const server = new ApolloServer({
     typeDefs: [userTypeDefs],
-    resolvers: [userResolvers]
+    resolvers: [userResolvers],
+    formatError: (error) => {
+        const { extensions: { code, ...restExtensions }, message } = error;
+        return {
+          message,
+          extensions: {
+            code,
+          },
+        };
+      },
 });
 
 mongoose.connect(process.env.MONGODB)
