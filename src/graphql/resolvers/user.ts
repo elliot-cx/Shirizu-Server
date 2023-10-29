@@ -1,7 +1,7 @@
-import { GraphQLError } from "graphql";
 import user from "../../models/user";
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
+import { INVALID_PASSWORD_ERROR, USER_ALREADY_EXIST_ERROR, USER_NOT_FOUND_ERROR } from "../errors";
 
 const userResolvers = {
    Query: {
@@ -13,14 +13,7 @@ const userResolvers = {
       registerUser: async (_, { input: { name, email, password } }) => {
          // Find existing acccount
          const oldUser = await user.findOne({ email: email });
-
-         if (oldUser) {
-            throw new GraphQLError(`A user is already registered with the email '${email}'`, {
-               extensions: {
-                  code: 'USER_ALREADY_EXIST'
-               }
-            });
-         }
+         if (oldUser) throw USER_ALREADY_EXIST_ERROR;
 
          // Adding user to the database
          const res = await new user({
@@ -35,33 +28,20 @@ const userResolvers = {
       },
       loginUser: async (_, { input: { email, password } }) => {
          // Search user
-         const foundUser = await user.findOne({ email });
-         if (!foundUser) {
-            throw new GraphQLError(`User not found`, {
-               extensions: {
-                  code: 'USER_NOT_FOUND'
-               }
-            });
-         }
+         const foundUser = await user.findOne({ email: email })
+         if (!foundUser) throw USER_NOT_FOUND_ERROR;
 
          // Check password
          const validPassword = await bcrypt.compare(password, foundUser.hashedPassword);
-         if (!validPassword) {
-            throw new GraphQLError(`Invalid password`, {
-               extensions: {
-                  code: 'INVALID_PASSWORD'
-               }
-            });
-         }
+         if (!validPassword) throw INVALID_PASSWORD_ERROR;
 
-         // Generating the access token
+         // Generating tokens
          const accessToken = jwt.sign(
             { sub: foundUser._id },
             process.env.SECRET_KEY,
             { expiresIn: '1h' }
          );
 
-         // Generating the refresh token
          const refreshToken = jwt.sign(
             { sub: foundUser._id },
             process.env.SECRET_KEY,

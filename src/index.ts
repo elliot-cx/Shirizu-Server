@@ -3,21 +3,19 @@ import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import mongoose from "mongoose";
 import chalk from 'chalk';
-import userTypeDefs from './graphql/typedefs/userTypeDefs';
-import userResolvers from './graphql/resolvers/userResolvers';
+import typeDefs from './graphql/typedefs';
+import resolvers from './graphql/resolvers';
 
 const server = new ApolloServer({
-   typeDefs: [userTypeDefs],
-   resolvers: [userResolvers],
+   typeDefs: typeDefs,
+   resolvers: resolvers,
    formatError: (error) => {
       const { extensions: { code, ...restExtensions }, message } = error;
       return {
          message,
-         extensions: {
-            code,
-         },
+         extensions: { code },
       };
-   },
+   }
 });
 
 mongoose.connect(process.env.MONGODB)
@@ -29,4 +27,5 @@ mongoose.connect(process.env.MONGODB)
    })
    .then(({ url }) => {
       console.log(`🚀 Apollo server running at : ${url}`);
+      // extractMiddleImage();
    })
