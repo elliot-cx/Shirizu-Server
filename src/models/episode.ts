@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 
 const episodeSchema = new Schema({
+   number: Number,
    title: String, // Title of the episode
    duration: String, // Duration of the episode
    image: String, // URL of the episode image
