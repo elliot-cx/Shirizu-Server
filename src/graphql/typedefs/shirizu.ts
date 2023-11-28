@@ -1,33 +1,25 @@
 const shirizuTypeDefs = `#graphql
-  type Shirizu {
-    _id: ID!
-    title: String!
-    status: String
-    totalEpisodes: Int
-    episodes: [Episode]
-    sequel: [Shirizu]
-    prequel: [Shirizu]
-  }
+   type Shirizu {
+      _id: ID!
+      title: String!
+      alternativeTitles: [String]!
+      status: String!
+      totalEpisodes: Int!
+      characters: [Character]!
+      episodes: [Episode]!
+      genres: [Genre]!
+      themes: [Theme]!
+      recommendedAge: Int!
+      animationStudios: [Studio]!
+      description: String!
+      sequel: [Shirizu]!
+      prequel: [Shirizu]!
+   }
 
-  input ShirizuInput {
-    title: String!
-    status: String
-    totalEpisodes: Int
-    episodes: [ID]
-    sequel: [ID]
-    prequel: [ID]
-  }
-
-  type Query {
-    getShirizus: [Shirizu]
-    getShirizu(id: ID!): Shirizu
-  }
-
-  type Mutation {
-    createShirizu(input: ShirizuInput): Shirizu
-    updateShirizu(id: ID!, input: ShirizuInput): Shirizu
-    deleteShirizu(id: ID!): ID
-  }
+   type Query {
+      getShirizus: [Shirizu]!
+      getShirizu(id: ID!): Shirizu!
+   }
 `;
 
 export default shirizuTypeDefs;

@@ -1,31 +1,17 @@
 const episodeTypeDefs = `#graphql
-  type Episode {
-    _id: ID!
-    title: String!
-    duration: String!
-    image: String!
-    videoUrl: String!
-    series: Shirizu
-  }
-
-  input EpisodeInput {
-    title: String!
-    duration: String!
-    image: String!
-    videoUrl: String!
-    series: ID!
-  }
-
-  type Query {
-    getEpisodes: [Episode]
-    getEpisode(id: ID!): Episode
-  }
-
-  type Mutation {
-    createEpisode(input: EpisodeInput): Episode
-    updateEpisode(id: ID!, input: EpisodeInput): Episode
-    deleteEpisode(id: ID!): ID
-  }
+   type Episode {
+      _id: ID!
+      title: String!
+      duration: String!
+      image: String!
+      videoUrl: String!
+      shirizu: Shirizu
+   }
+   
+   type Query {
+      getEpisodes: [Episode]!
+      getEpisode(id: ID!): Episode!
+   }
 `;
 
 export default episodeTypeDefs;
