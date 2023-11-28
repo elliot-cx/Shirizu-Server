@@ -1,22 +1,22 @@
-import user from "../../models/user";
+import { User } from '../../models';
 import bcrypt from 'bcryptjs';
 import jwt from "jsonwebtoken";
-import { INVALID_PASSWORD_ERROR, USER_ALREADY_EXIST_ERROR, USER_NOT_FOUND_ERROR } from "../errors";
+import { Errors } from '../errors';
 
 const userResolvers = {
    Query: {
       getUsers: async (_, { }) => {
-         return await user.find();
+         return await User.find();
       },
    },
    Mutation: {
       registerUser: async (_, { input: { name, email, password } }) => {
          // Find existing acccount
-         const oldUser = await user.findOne({ email: email });
-         if (oldUser) throw USER_ALREADY_EXIST_ERROR;
+         const oldUser = await User.findOne({ email: email });
+         if (oldUser) throw Errors.USER_ALREADY_EXIST_ERROR;
 
          // Adding user to the database
-         const res = await new user({
+         const res = await new User({
             name: name,
             email: email,
             hashedPassword: bcrypt.hashSync(password),
@@ -28,12 +28,12 @@ const userResolvers = {
       },
       loginUser: async (_, { input: { email, password } }) => {
          // Search user
-         const foundUser = await user.findOne({ email: email })
-         if (!foundUser) throw USER_NOT_FOUND_ERROR;
+         const foundUser = await User.findOne({ email: email })
+         if (!foundUser) throw Errors.USER_NOT_FOUND_ERROR;
 
          // Check password
          const validPassword = await bcrypt.compare(password, foundUser.hashedPassword);
-         if (!validPassword) throw INVALID_PASSWORD_ERROR;
+         if (!validPassword) throw Errors.INVALID_PASSWORD_ERROR;
 
          // Generating tokens
          const accessToken = jwt.sign(
