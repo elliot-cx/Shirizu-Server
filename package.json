@@ -15,11 +15,13 @@
     "@apollo/server": "^4.9.5",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.1.2",
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.3.1",
     "fluent-ffmpeg": "^2.1.2",
     "graphql": "^16.8.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.6.3"
+    "mongoose": "^7.6.3",
+    "node-fetch": "^2.6.9"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.5",
@@ -28,6 +30,7 @@
     "@types/jsonwebtoken": "^9.0.4",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^20.8.9",
+    "@types/node-fetch": "2.6.2",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2"

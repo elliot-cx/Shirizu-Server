@@ -14,8 +14,8 @@ function extractMiddleImage() {
             count: 1,
             folder: outputImagePath,
             filename: 'middle_image',
-            //size: '640x360', // Spécifiez la résolution de l'image extraite ici
-            timemarks: ['10%'], // Pour extraire l'image au milieu de la vidéo
+            //size: '640x360', // Image size
+            timemarks: ['10%'], // Extract at specific timemarks
         })
         .on('end', () => {
             console.log('Image extraite avec succès.');
