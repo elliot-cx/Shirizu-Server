@@ -1,5 +1,10 @@
 import fetch, { Response } from "node-fetch";
 import { load } from "cheerio";
+import chalk from "chalk";
+
+function log(string: string) {
+   console.log(chalk.red("[Nautiljon]"), string);
+}
 
 export namespace NautiljonProvider {
 
@@ -27,7 +32,7 @@ export namespace NautiljonProvider {
       recommendedAge: number, // Recommended age for the shirizu
       animationStudios: string[], // Reference to animation studios associated with this shirizu
       description: string,
-      caracters: nautiljonCharacter[],
+      characters: nautiljonCharacter[],
       episodes: nautiljonAnimeEpisode[], // Reference to episodes in the shirizu
       sequelUrl: string, // Reference to sequel shirizu
       prequelUrl: string, // Reference to prequel shirizu
@@ -109,8 +114,8 @@ export namespace NautiljonProvider {
          const ageContainer = $(mainContainer).find('li:contains("Age conseillé")');
          const studioContainer = $(mainContainer).find('li:contains("Studio d\'animation")');
          const descriptionContainer = $(mainContainer).find('.description');
-         const charactersContainer = $(mainContainer).find('div.top_bloc:contains("Personnages")');
-         const episodesContainer = $(mainContainer).find('table.tabepisodes');
+         const charactersContainer = $(mainContainer).find('div.top_bloc:has(h2:contains("Personnages"))');
+         const episodesContainer = $(mainContainer).find('table.tabepisodes > tbody');
 
          const title = mainTitleContainer.text();
          const rating = Number.parseFloat(ratingContainer.text());
@@ -148,7 +153,7 @@ export namespace NautiljonProvider {
 
          episodesContainer.find('tr').each((_, episodeContainer) => {
             const tds = $(episodeContainer).find('td');
-            const number = Number.parseInt(tds.eq(0).text());
+            const number = Number.parseFloat(tds.eq(0).text());
             const title = tds.eq(1).find('.grey').text();
             const date = tds.eq(2).text();
 
@@ -168,7 +173,7 @@ export namespace NautiljonProvider {
             recommendedAge: age,
             animationStudios: studios,
             description: description,
-            caracters: characters,
+            characters: characters,
             episodes: episodes
          } as nautiljonAnimeResult;
       });

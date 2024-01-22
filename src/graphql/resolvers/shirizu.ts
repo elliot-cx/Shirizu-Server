@@ -1,4 +1,4 @@
-import { Shirizu } from "../../models";
+import { Character, Shirizu } from "../../models";
 import { Errors } from "../errors";
 
 const shirizuResolver = {
@@ -13,6 +13,10 @@ const shirizuResolver = {
             }
             return shirizu;
         }
+    },
+    Shirizu: {
+        characters: async (shirizu) => await Character.find({ shirizu: shirizu._id }),
+        
     }
 }
 

@@ -12,8 +12,8 @@ const shirizuTypeDefs = `#graphql
       recommendedAge: Int!
       animationStudios: [Studio]!
       description: String!
-      sequel: [Shirizu]!
-      prequel: [Shirizu]!
+      sequel: Shirizu
+      prequel: Shirizu
    }
 
    type Query {

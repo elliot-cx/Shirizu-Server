@@ -1,4 +1,10 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
+
+interface IGenre {
+   name: string;
+   img: string;
+   shirizu: Types.ObjectId;
+}
 
 const genreSchema = new Schema({
    name: String, // Name of the character
@@ -6,4 +12,4 @@ const genreSchema = new Schema({
    shirizu: [{ type: Schema.Types.ObjectId, ref: 'Shirizu' }]
 });
 
-export default model('Character', genreSchema);
+export default model<IGenre>('Character', genreSchema);

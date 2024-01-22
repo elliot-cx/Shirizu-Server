@@ -1,6 +1,24 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 
 const seriesStatusEnum = ['completed', 'ongoing'];
+
+interface IShirizu {
+   title: string;
+   alternativeTitles: string[];
+   status: string;
+   totalEpisodes: number;
+   characters?: Types.ObjectId[];
+   episodes?: Types.ObjectId[];
+   provider: string;
+   link: string;
+   genres?: Types.ObjectId[];
+   themes?: Types.ObjectId[];
+   recommandedAge: number;
+   animationStudios?: Types.ObjectId[];
+   description: string;
+   sequel?: Types.ObjectId;
+   prequel?: Types.ObjectId;
+}
 
 const shirizuSchema = new Schema({
    title: String, // Title of the shirizu
@@ -20,4 +38,6 @@ const shirizuSchema = new Schema({
    prequel: { type: Schema.Types.ObjectId, ref: 'Shirizu' }, // Reference to prequel shirizu
 });
 
-export default model('Shirizu', shirizuSchema);
+export default model<IShirizu>('Shirizu', shirizuSchema);
+
+export { IShirizu };

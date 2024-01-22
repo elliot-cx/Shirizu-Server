@@ -1,16 +1,29 @@
 import 'dotenv/config';
 import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
-import mongoose from "mongoose";
-import chalk from 'chalk';
-import typeDefs from './graphql/typedefs';
-import resolvers from './graphql/resolvers';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { expressMiddleware } from '@apollo/server/express4';
+import { fileURLToPath } from 'url';
+import { LogType, log } from '../utils/logger';
 import { AnimesamaProvider } from './providers/videos/animesama';
 import { NautiljonProvider } from './providers/data/nautiljon';
+import mongoose from "mongoose";
+import typeDefs from './graphql/typedefs';
+import resolvers from './graphql/resolvers';
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import bodyParser from 'body-parser';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const app = express();
+const httpServer = http.createServer(app);
 
 const server = new ApolloServer({
    typeDefs: typeDefs,
    resolvers: resolvers,
+   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
    formatError: (error) => {
       const { extensions: { code, ...restExtensions }, message } = error;
       return {
@@ -20,29 +33,26 @@ const server = new ApolloServer({
    }
 });
 
-mongoose.connect(process.env.MONGODB)
-   .then(() => {
-      console.log(chalk.green("[✓]"), "MongoDB connection successful");
-      return startStandaloneServer(server, {
-         listen: { port: parseInt(process.env.APOLLO_PORT) }
-      });
-   })
-   .then(({ url }) => {
-      console.log(`🚀 Apollo server running at : ${url}`);
-      // extractMiddleImage();
-      // AnimesamaProvider.checkForUpdates();
-      // AnimesamaProvider.getEpisodes('/videos/One%20Punch%20Man/').then((episodes) => {
-      //    console.log(episodes);
-         
-      // })
-      // AnimesamaProvider.getEpisodes('/videos/Vinland%20Saga/').then((episodes) => {
-      //    console.log(episodes);
-         
-      // })
-      // NautiljonProvider.search('spy x family').then((res) => {
-      //    console.log(res);
-      // })
-      // NautiljonProvider.Retreive('https://www.nautiljon.com/animes/kage+no+jitsuryokusha+ni+naritakute!+2nd+season.html').then((res)=>{
-      //    console.log(res);
-      // });
-   })
+log("Starting Apollo Server...");
+await server.start();
+log("Connecting to MongoDB...");
+await mongoose.connect(process.env.MONGODB);
+log("MongoDB connection successful", LogType.SUCCESS);
+
+app.use(express.static(path.join(__dirname, '../public')));
+
+app.use(cors(), bodyParser.json(), expressMiddleware(server));
+
+log("Launching express server...");
+httpServer.listen({ port: parseInt(process.env.PORT) }, () => {
+   console.log(`🚀 Apollo server running at : http://localhost:${process.env.PORT}`);
+
+   // extractMiddleImage();
+   // AnimesamaProvider.checkForUpdates();
+   // AnimesamaProvider.getEpisodes('/videos/One%20Punch%20Man/').then((episodes) => {
+   //    console.log(episodes);
+   // })
+   // NautiljonProvider.Retreive('https://www.nautiljon.com/animes/mashle.html').then((res) => {
+   //    console.log(res);
+   // });
+});

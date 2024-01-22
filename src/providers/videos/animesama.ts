@@ -1,7 +1,5 @@
 import fetch, { Response } from "node-fetch";
 import chalk from "chalk";
-import { NautiljonProvider } from "../data/nautiljon";
-import { Shirizu } from "../../models";
 
 function log(string: string) {
     console.log(chalk.magenta("[AnimeSama]"), string);
